@@ -37,9 +37,17 @@ INSTALLED_APPS = [
     'articles',
     'problems',
     # 3rd party apps
-    
-
-    # # native apps
+    'rest_framework',
+    'rest_framework.authtoken',
+    ## 로그인
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    ## CORS 처리
+    'corsheaders'
+    # native apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -94,6 +102,11 @@ DATABASES = {
         'PORT': config('DB_PORT', cast=int),
     }
 }
+print(f"DB_NAME: {config('DB_NAME')}")
+print(f"DB_USER: {config('DB_USER')}")
+print(f"DB_PASSWORD: {config('DB_PASSWORD')}")
+print(f"DB_HOST: {config('DB_HOST')}")
+print(f"DB_PORT: {config('DB_PORT')}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
