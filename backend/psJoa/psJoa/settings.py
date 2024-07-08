@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'dj_rest_auth.registration',
     ## CORS 처리
-    'corsheaders'
+    'corsheaders',
     # native apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,6 +58,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    # native
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -102,11 +105,6 @@ DATABASES = {
         'PORT': config('DB_PORT', cast=int),
     }
 }
-print(f"DB_NAME: {config('DB_NAME')}")
-print(f"DB_USER: {config('DB_USER')}")
-print(f"DB_PASSWORD: {config('DB_PASSWORD')}")
-print(f"DB_HOST: {config('DB_HOST')}")
-print(f"DB_PORT: {config('DB_PORT')}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -151,3 +149,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 커스텀 유저
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# 계정 처리 => allauth, dj_rest_auth 용
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',    # Django 기존 로그인
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth 로그인
+)
+ 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [                         # REST API에서 사용할 인증 방법을 정의
+        'rest_framework.authentication.SessionAuthentication',  # 세션 기반 인증
+        'rest_framework.authentication.TokenAuthentication',    # 토큰 기반 인증
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [                             # 기본 권한 부여 방식을 정의
+        'rest_framework.permissions.IsAuthenticated',           # 인증된 사용자만 API에 접근
+    ],
+}
+
+# 로그인 allauth 옵션
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_USERNAME_MIN_LENGTH = 4
+ACCOUNT_PASSWORD_MIN_LENGTH = 16
